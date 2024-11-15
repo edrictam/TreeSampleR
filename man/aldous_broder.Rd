@@ -17,6 +17,4 @@ An adjacency matrix of the random spanning tree.
 \description{
 Sample a random spanning tree
 }
-\examples{
-aldous_broder(A, 1)
-}
+
