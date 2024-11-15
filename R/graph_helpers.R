@@ -1,7 +1,7 @@
 #' plot a tree graph with root specified
 #'
 #' @param root the vertex that serves as the root
-#' @param g A graph object from igraph
+#' @param tree A graph object from igraph
 #' @param vertex_size The size of the vertices in the plot
 #' @return A plot of the tree.
 plot_as_tree <- function(tree, root = "1", vertex_size = 50){

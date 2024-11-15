@@ -17,4 +17,6 @@ An adjacency matrix of the random spanning tree.
 \description{
 Sample a random spanning tree
 }
-
+\examples{
+wilson(A, 1)
+}

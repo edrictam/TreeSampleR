@@ -4,10 +4,12 @@
 \alias{plot_underlying}
 \title{plot the underlying graph}
 \usage{
-plot_underlying(g)
+plot_underlying(g, vertex_size = 50)
 }
 \arguments{
 \item{g}{A graph object from igraph}
+
+\item{vertex_size}{The size of the vertices in the plot}
 }
 \value{
 A plot of the graph.

@@ -4,12 +4,14 @@
 \alias{plot_as_tree}
 \title{plot a tree graph with root specified}
 \usage{
-plot_as_tree(tree, root = "1")
+plot_as_tree(tree, root = "1", vertex_size = 50)
 }
 \arguments{
+\item{tree}{A graph object from igraph}
+
 \item{root}{the vertex that serves as the root}
 
-\item{g}{A graph object from igraph}
+\item{vertex_size}{The size of the vertices in the plot}
 }
 \value{
 A plot of the tree.
