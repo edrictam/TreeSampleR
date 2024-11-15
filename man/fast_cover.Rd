@@ -19,6 +19,3 @@ An adjacency matrix of the random spanning tree.
 \description{
 Sample a random spanning tree
 }
-\examples{
-fast_cover(A, 1, 10)
-}
