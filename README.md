@@ -1,7 +1,5 @@
-[![Build Status](https://travis-ci.com/vittorioorlandi/FLAME.svg?branch=master)](https://travis-ci.com/vittorioorlandi/FLAME)
-
 # Introduction
-The `TreeSampleR` package offers fast implementations of the exact random spanning tree samplers, such as the Aldous-Broder sampler, Wilson sampler and the fast-forwarded cover sampler described by Tam, Dunson and Duan [here](https://arxiv.org/pdf/2405.03096). 
+The `TreeSampleR` package offers fast C++ implementations of several exact random spanning tree samplers, such as the Aldous-Broder sampler, Wilson sampler and the fast-forwarded cover sampler described by Tam, Dunson and Duan [here](https://arxiv.org/pdf/2405.03096). 
 
 # An Example
 We start by generating some toy graph data, from which we can sample random spanning trees. 
