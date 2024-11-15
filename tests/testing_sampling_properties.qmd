@@ -1,6 +1,6 @@
 ---
 title: "Sampling Property Tests"
-format: pdf
+format: html
 ---
 
 ```{r message = FALSE}
@@ -11,7 +11,8 @@ library(tidyverse)
 ```
 
 ```{r}
-## Generate graph 
+## Generate a graph and arbitrarily select two 
+## edges to illustrate the testing procedure
 
 num_vert = 10
 A_1<- matrix(rep(1, num_vert*num_vert), num_vert, num_vert)
@@ -22,14 +23,14 @@ A[1:num_vert, 1:num_vert] <- A_1
 A[(num_vert + 1):(2*num_vert), (num_vert + 1):(2*num_vert)] <- A_2
 diag(A) <- 0
 
+
+## select two edges
 edge1 = c(num_vert, num_vert + 1)
 edge2 = c(num_vert %/% 2, num_vert + num_vert %/% 2)
 
-## Bottleneck edge 
 A[edge1[1], edge1[2]] <- 1
 A[edge1[2], edge1[1]] <- 1
 
-## Bottleneck edge 
 A[edge2[1], edge2[2]] <- 1
 A[edge2[2], edge2[1]] <- 1
 
@@ -38,7 +39,8 @@ A[edge2[2], edge2[1]] <- 1
 
 
 ```{r}
-## Check Sampling
+## Sampling 1000 spanning trees over 1000 batches on 
+## the above adjacency matrix using all 3 algorithms
 set.seed(100)
 
 N = 1000
@@ -74,7 +76,7 @@ for (j in 1:reps) {
   ## accel loop
   for (i in 1:N){
     init = 0
-    a1 <- fastCoverThreshold(A, init, num_vert*2, FALSE)
+    a1 <- fast_cover(A, init, num_vert*2)
     if (a1[edge1[1], edge1[2]] == 1){
       accel.edge1 = accel.edge1 + 1
     }
@@ -117,11 +119,11 @@ for (j in 1:reps) {
   wilson.edge2.list[j] = wilson.edge2
 }
 
-save(accel.edge1.list , accel.edge2.list, file = "accel_edge_inclusion_samples_1000.RData")
+save(accel.edge1.list , accel.edge2.list, file = "saved_tree_samples/accel_edge_inclusion_samples_1000.RData")
 
-save(normal.edge1.list , normal.edge2.list,  file = "normal_edge_inclusion_samples_1000.RData")
+save(normal.edge1.list , normal.edge2.list,  file = "saved_tree_samples/normal_edge_inclusion_samples_1000.RData")
 
-save(wilson.edge1.list , wilson.edge2.list,  file = "wilson_edge_inclusion_samples_1000.RData")
+save(wilson.edge1.list , wilson.edge2.list,  file = "saved_tree_samples/wilson_edge_inclusion_samples_1000.RData")
 ```
 
 
@@ -130,10 +132,13 @@ Sources:
 e.g. effective resistance formula https://cs-people.bu.edu/orecchia/CS591fa16/lecture7.pdf e.g. Marginal inclusion probability formula: e.g. http://cs-www.cs.yale.edu/homes/spielman/sagt/sagt.pdf Chapter 13.5
 
 ```{r}
+
+## define function that calculates marginal edge
+## inclusion probability
+
 D = diag(colSums(A))
 L = D - A
 L_inv = ginv(L)
-# L_inv
 
 get_marginal_probability <- function(u, v, L_inv, A){
   w = A[u, v]
@@ -147,9 +152,10 @@ get_marginal_probability <- function(u, v, L_inv, A){
 }
 ```
 
-Test against exact marginal inclusion
 
 ```{r}
+## calculate the exact marginal edge inclusion 
+## probability of the two edges
 edge1 = c(num_vert, num_vert + 1)
 edge2 = c(num_vert %/% 2, num_vert + num_vert %/% 2)
 edge_1_exact_p = get_marginal_probability(edge1[1], edge1[2], L_inv, A)
@@ -160,6 +166,8 @@ print(edge_2_exact_p)
 ```
 
 ```{r}
+## plot the empirical edge inclusion frequencies 
+## for edge 1 and compare with theoretical value
 p.1 = get_marginal_probability(edge1[1], edge1[2], L_inv, A)
 
 data.normal <- data.frame(x= normal.edge1.list)
@@ -170,19 +178,19 @@ ggplot(data.normal, aes(x)) +
   stat_function(fun = dnorm, args = list(mean= N*p.1, sd= sqrt(N*p.1*(1-p.1)))) + 
   xlim(N*p.1 -N/10 , N*p.1 +N/10 ) + 
   geom_vline(xintercept=N*p.1, color = "red") +
-  ggtitle("Histogram of bottleneck edge inclusion for aldous-broder algorithm") + 
+  ggtitle("Histogram of edge inclusion for aldous-broder algorithm") + 
   xlab("Counts of edge inclusion out of 1000 generated trees")
 
-#overlay accel curve on histogram
+#overlay fast forward curve on histogram
 data.accel <- data.frame(x= accel.edge1.list)
 
-#create histogram and overlay accel curve
+#create histogram and overlay fast forward curve
 ggplot(data.accel, aes(x)) +
   geom_histogram(aes(y = ..density..), fill='lightgray', col='black') +
   stat_function(fun = dnorm, args = list(mean= N*p.1, sd= sqrt(N*p.1*(1-p.1)))) +
   xlim(N*p.1 -N/10 , N*p.1 +N/10 ) + 
   geom_vline(xintercept=N*p.1, color = "red") +
-  ggtitle("Histogram of bottleneck edge inclusion for fast-forwarded algorithm") + 
+  ggtitle("Histogram of edge inclusion for fast-forwarded algorithm") + 
   xlab("Counts of edge inclusion out of 1000 generated trees")
 
 data.wilson <- data.frame(x= wilson.edge1.list)
@@ -192,13 +200,15 @@ ggplot(data.wilson, aes(x)) +
   stat_function(fun = dnorm, args = list(mean= N*p.1, sd= sqrt(N*p.1*(1-p.1)))) +
   xlim(N*p.1 -N/10 , N*p.1 +N/10 ) + 
   geom_vline(xintercept=N*p.1, color = "red") +
-  ggtitle("Histogram of bottleneck edge inclusion for Wilson algorithm") + 
+  ggtitle("Histogram of edge inclusion for Wilson algorithm") + 
   xlab("Counts of edge inclusion out of 1000 generated trees")
 
 
 ```
 
 ```{r}
+## plot the empirical edge inclusion frequencies 
+## for edge 2 and compare with theoretical value
 p.2 = get_marginal_probability(edge2[1], edge2[2], L_inv, A)
 
 data.normal <- data.frame(x= normal.edge2.list)
@@ -209,19 +219,19 @@ ggplot(data.normal, aes(x)) +
   stat_function(fun = dnorm, args = list(mean= N*p.2, sd= sqrt(N*p.2*(1-p.2)))) + 
   xlim(N*p.1 -N/10 , N*p.1 +N/10) + 
   geom_vline(xintercept=1000*p.2, color = "red") +
-  ggtitle("Histogram of bottleneck edge inclusion for Aldous-Broder algorithm") + 
+  ggtitle("Histogram of edge inclusion for Aldous-Broder algorithm") + 
   xlab("Counts of edge inclusion out of 1000 generated trees")
 
 #overlay accel curve on histogram
 data.accel <- data.frame(x= accel.edge2.list)
 
-#create histogram and overlay accel curve
+#create histogram and overlay fast forward curve
 ggplot(data.accel, aes(x)) +
   geom_histogram(aes(y = ..density..), fill='lightgray', col='black') +
   stat_function(fun = dnorm, args = list(mean= N*p.2, sd= sqrt(N*p.2*(1-p.2)))) +
   xlim(N*p.1 -N/10 , N*p.1 +N/10) + 
   geom_vline(xintercept=1000*p.2, color = "red") +
-  ggtitle("Histogram of bottleneck edge inclusion for fast-forwarded algorithm") + 
+  ggtitle("Histogram of edge inclusion for fast-forwarded algorithm") + 
   xlab("Counts of edge inclusion out of 1000 generated trees")
 
 data.wilson <- data.frame(x= wilson.edge2.list)
@@ -231,8 +241,9 @@ ggplot(data.wilson, aes(x)) +
   stat_function(fun = dnorm, args = list(mean= N*p.2, sd= sqrt(N*p.2*(1-p.2)))) +
   xlim(N*p.2 -N/10 , N*p.2 +N/10 ) + 
   geom_vline(xintercept=N*p.2, color = "red") +
-  ggtitle("Histogram of bottleneck edge inclusion for Wilson algorithm") + 
+  ggtitle("Histogram of edge inclusion for Wilson algorithm") + 
   xlab("Counts of edge inclusion out of 1000 generated trees")
 
 ```
 
+All 3 algorithms offers excellent match with the theoretical value. Moreover, the distribution of the empirical frequency estimates matches up with the normal curve (with mean and variances computed from theoretical value under the central limit theorem) well. Provides useful evidence that algorithms are implemented correctly. 

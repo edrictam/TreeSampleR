@@ -22,8 +22,42 @@ using namespace std;
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 arma::mat fast_cover(const arma::mat&W, int start, int threshold) {
-  // Initialize variables
+  // initialize variables
   int n = W.n_rows;
+  
+  // handle trivial case
+  if (n == 1){
+    return arma::zeros(1);
+  }
+  
+  // ensure input is correct
+  if (!approx_equal(W, W.t(), "absdiff", 1e-10))
+    throw Rcpp::exception("The matrix provided is not symmetric");
+  
+  if (!all(all(W >= 0)))
+    throw Rcpp::exception("The matrix provided has negative entries");
+  
+  if (start < 0)
+    throw Rcpp::exception("The starting point provided has to be non-negative");
+  
+  if (threshold < 0)
+    throw Rcpp::exception("The threshold provided has to be non-negative");
+  
+  if (start > (n - 1))
+    throw Rcpp::exception("The starting point provided is out of range. It cannot be larger than n - 1 since C++ uses 0 based indexing.");
+  
+  if (!all(diagvec(W) == 0))
+    throw Rcpp::exception("The diagonal has to be all 0's. No self loops allowed in adjacency matrix.");
+  
+  arma::mat D = arma::diagmat(sum(W, 1));
+  arma::mat L = D - W;
+  
+  arma::vec eigval;
+  arma::eig_sym(eigval, L); 
+  
+  // second smallest eigenvalue of Laplacian is 0 if and only if graph is not connected
+  if (eigval(1) == 0)
+    throw Rcpp::exception("The graph is not connected. You need to provide a connected graph.");
 
   arma::uvec dummies(n-1, fill::ones);
   arma::uvec nodes(n, fill::zeros);
