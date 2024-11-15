@@ -34,5 +34,5 @@ TreeSampleR can be installed from the author's GitHub, [here](https://github.com
 
 # Troubleshooting
 
-For Mac Apple Silicon (M1 and above) machines, when the using R packages with C++ code sometimes the compiler complains that "ld: Library 'gfortran' not found". If this is the case, this can be resolved by [the answer by chermen in this post](https://stackoverflow.com/questions/69639782/installing-gfortran-on-macbook-with-apple-m1-chip-for-use-in-r). In summary, you need to specify to R in the Makevars file the locations of your gcc/gfortran libraries. 
+For Mac Apple Silicon (M1 and above) machines, when using R packages with C++ code sometimes the compiler complains that "ld: Library 'gfortran' not found". If this is the case, this can be resolved by [the answer by chermen in this post](https://stackoverflow.com/questions/69639782/installing-gfortran-on-macbook-with-apple-m1-chip-for-use-in-r). In summary, you need to specify to R in the Makevars file the locations of your gcc/gfortran libraries. 
 
