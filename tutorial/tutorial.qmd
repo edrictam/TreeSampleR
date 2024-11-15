@@ -1,6 +1,7 @@
 ---
 title: "Tutorial on TreeSampleR"
-format: html
+output: github_document
+format: pdf
 ---
 
 ## Summary 
