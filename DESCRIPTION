@@ -1,0 +1,13 @@
+Package: TreeSampleR
+Type: Package
+Title: Fast Implementations of Exact Random Spanning Tree Samplers 
+Version: 1.0
+Date: 2024-11-14
+Author: Edric Tam
+Maintainer: Edric Tam <edrictam@stanford.edu>
+Description: TreeSampleR provides C++ based implementations of three random spanning tree samplers, namely the Aldous-Broder sampler, Wilson sampler and the fast-forwarded cover sampler of Tam, Dunson and Duan (2024). A principled way to probe the correctness of random spanning tree samplers is also provided. 
+License: MIT License
+Imports: Rcpp (>= 1.0.13)
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.3.2.9000
+Encoding: UTF-8

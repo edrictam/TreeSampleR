@@ -1,0 +1,1 @@
+unsigned int sample_categorical_unnormalized(const arma::vec& probs);
