@@ -1,5 +1,5 @@
 # Introduction
-The `TreeSampleR` package offers fast C++ implementations of several exact random spanning tree samplers, such as the Aldous-Broder sampler, Wilson sampler and the fast-forwarded cover sampler described by Tam, Dunson and Duan [here](https://arxiv.org/pdf/2405.03096). The implementations here focus on sampling an undirected spanning tree from a potentially weighted undirected graph. Generalization of these algorithms to certain directed graphs is possible but not pursued here. 
+The `TreeSampleR` package offers fast C++ implementations of several exact random spanning tree samplers, such as the Aldous-Broder sampler, Wilson sampler and the fast-forwarded cover sampler described by Tam, Dunson and Duan [here](https://arxiv.org/pdf/2405.03096). 
 
 # An Example
 We start by generating some toy graph data in the form of an adjacency matrix, from which we can sample random spanning trees. 
